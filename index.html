@@ -35,15 +35,57 @@
         <span class="opacity-60 text-[10px] md:text-xs">Сможешь ли ты разорвать петлю или станешь частью кода?</span>
     </p>
 </div>
-        <!-- ВЕЙТЛИСТ (СЮДА ВСТАВЬ СВОЙ ID) -->
-        <div class="bg-card p-8 rounded-3xl shadow-2xl w-full max-w-md border-[#2dfd9c]/20 border">
-            <div id="getwaitlist-container" data-waitlist_id="0000"></div> 
-            <script src="https://getwaitlist.com/widgets/v3/widget.js"></script>
+<!-- Твой личный Вейтлист (Google Sheets) -->
+        <div class="max-w-md mx-auto bg-black/40 border border-[#2dfd9c]/20 p-8 rounded-3xl backdrop-blur-sm shadow-2xl text-center">
+            <h3 class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-6 font-bold">Система ожидания активна</h3>
             
-            <p class="mt-4 text-sm text-gray-500 uppercase tracking-widest font-bold italic">
-                Ожидают релиза: <span class="text-[#2dfd9c] text-lg">1,248</span>
+            <form id="waitlist-form" class="flex flex-col gap-4">
+                <input type="email" name="email" placeholder="Твой Email" required 
+                    class="bg-black/60 border border-gray-800 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-[#2dfd9c] transition-all text-center">
+                <button type="submit" id="submit-btn" 
+                    class="bg-[#2dfd9c] text-black font-black py-4 rounded-xl uppercase tracking-widest hover:scale-[1.02] transition-transform active:scale-95">
+                    Ждать релиза
+                </button>
+            </form>
+
+            <div id="success-msg" class="hidden text-[#2dfd9c] font-bold mt-4 uppercase text-[10px] tracking-widest animate-pulse">
+                Ты в системе. До встречи в Ташкенте.
+            </div>
+
+            <!-- Живой счетчик -->
+            <p class="mt-8 text-[10px] text-gray-600 uppercase tracking-[0.3em]">
+                Ожидают релиза: <span id="waitlist-counter" class="text-[#2dfd9c] text-sm">1248</span>
             </p>
         </div>
+
+        <script>
+            // ВСТАВЬ СВОЮ ССЫЛКУ НИЖЕ В КАВЫЧКИ
+            const scriptURL = https://script.google.com/macros/s/AKfycbySRXC2uMdU5IdT9HIxk9KF79JaJKhunDe_h9TzVe8dpdHUxYvM_hHdP0xtMQFirFRN/exec;
+            const form = document.getElementById('waitlist-form');
+            const counterElement = document.getElementById('waitlist-counter');
+
+            form.addEventListener('submit', e => {
+              e.preventDefault();
+              const btn = document.getElementById('submit-btn');
+              btn.disabled = true;
+              btn.innerText = 'Загрузка...';
+
+              fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => response.json())
+                .then(data => {
+                    form.classList.add('hidden');
+                    document.getElementById('success-msg').classList.remove('hidden');
+                    // К реальному числу из таблицы прибавляем 1248 для солидности
+                    counterElement.innerText = 1248 + data.count;
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    alert('Ошибка! Попробуй еще раз.');
+                    btn.disabled = false;
+                    btn.innerText = 'Ждать релиза';
+                });
+            });
+        </script>
     </header>
 
     <!-- СЕКЦИЯ: О ПРОЕКТЕ (ТВОЙ ТЕКСТ) -->
